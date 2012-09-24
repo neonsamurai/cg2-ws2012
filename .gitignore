@@ -1,0 +1,4 @@
+# Aptana files
+*.project
+*.pydevproject
+.settings
