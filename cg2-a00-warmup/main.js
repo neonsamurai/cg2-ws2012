@@ -59,6 +59,8 @@ define(["jquery", "util", "scene", "straight_line", "webgl-demo"],
         
         // update and draw the scene according to the input fields
         updateParams();
+        // call event handler whenever some <input> element is changed
+    	$("input").change(updateParams);
 
         /*
          *  File API check

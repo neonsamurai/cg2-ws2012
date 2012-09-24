@@ -2,3 +2,6 @@
 *.project
 *.pydevproject
 .settings
+
+# Mongoose webserver
+mongoose-3.3.exe
