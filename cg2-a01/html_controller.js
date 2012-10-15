@@ -76,18 +76,60 @@ define(["jquery", "straight_line", "circle"], (function($, StraightLine, Circle)
                                 color : randomColor()
                         };
 
-                        var circle = new Circle([randomX(), randomY()], randomX()/4 + 15, style)
+                        var circle = new Circle([randomX(), randomY()], randomX() / 4 + 15, style)
                         scene.addObjects([circle]);
 
                         sceneController.deselect();
                         sceneController.select(circle);
                 }));
-                $("#colorPicker").change((function(){
-                      console.log($("#colorPicker").val()) ;
-                      var obj = sceneController.getSelectedObject();
-                      obj.lineStyle.color = $("#colorPicker").val();
-                }));
+                $("#colorPicker").change((function() {
+                        console.log($("#colorPicker").val());
 
+                        var obj = sceneController.getSelectedObject();
+                        obj.lineStyle.color = $("#colorPicker").val();
+                        //obj.draggers.draggerStyle.color = $("#colorPicker").val();
+                        console.log(this);
+                        //this.lineStyle.color = obj.lineStyle.color;
+                        scene.draw(context);
+                }));
+                var updateColorpicker = function() {
+                        var obj = sceneController.getSelectedObject();
+                        $('#colorPicker').val(obj.lineStyle.color);
+                };
+                $("#lineWidth").change((function() {
+                        var obj = sceneController.getSelectedObject();
+                        obj.lineStyle.width = $("#lineWidth").val();
+                        scene.draw(context);
+                }));
+                var updateLineWidthInput = function() {
+                        var obj = sceneController.getSelectedObject();
+                        $("#lineWidth").val(obj.lineStyle.width);
+                };
+                $("#radius").change((function() {
+                        var obj = sceneController.getSelectedObject();
+                        obj.r = parseInt($("#radius").val());
+                        scene.draw(context);
+                }));
+                var updateRadiusInput = function() {
+                        var obj = sceneController.getSelectedObject();
+                        console.log(obj.r);
+                        if (obj.r) {
+                                $("#radiusDiv").show();
+
+                                $("#radius").val(obj.r);
+                        } else {
+                                $("#radiusDiv").hide();
+                        }
+                        scene.draw(context);
+                }
+                var updateInputFields = function() {
+                        updateColorpicker();
+                        updateLineWidthInput();
+                        updateRadiusInput();
+                }
+
+                sceneController.onSelection(updateInputFields);
+                sceneController.onObjChange(updateInputFields);
         };
 
         // return the constructor function
