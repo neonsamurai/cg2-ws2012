@@ -10,7 +10,7 @@
  */
 
 /* requireJS module definition */
-define(["jquery", "straight_line", "circle"], (function($, StraightLine, Circle) {"use strict";
+define(["jquery", "straight_line", "circle", "param_curve"], (function($, StraightLine, Circle, ParametricCurve) {"use strict";
 
         /*
          * define callback functions to react to changes in the HTML page
@@ -82,6 +82,19 @@ define(["jquery", "straight_line", "circle"], (function($, StraightLine, Circle)
                         sceneController.deselect();
                         sceneController.select(circle);
                 }));
+                $("#btnNewCurve").click((function() {
+                        var style = {
+                                width : Math.floor(Math.random() * 3) + 1,
+                                color : randomColor()
+                        };
+
+                        var curve = new ParametricCurve(parseInt($("#tmin").val()), parseInt($("#tmax").val()), $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
+                        
+                        scene.addObjects([curve]);
+
+                        sceneController.deselect();
+                        sceneController.select(curve);
+                }));
                 $("#colorPicker").change((function() {
                         console.log($("#colorPicker").val());
 
@@ -112,7 +125,7 @@ define(["jquery", "straight_line", "circle"], (function($, StraightLine, Circle)
                 }));
                 var updateRadiusInput = function() {
                         var obj = sceneController.getSelectedObject();
-                        console.log(obj.r);
+
                         if (obj.r) {
                                 $("#radiusDiv").show();
 

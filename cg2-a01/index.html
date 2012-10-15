@@ -45,11 +45,22 @@
                                 <button id="btnNewCircle" type="button"   >
                                         New Circle
                                 </button>
+                                
+                                 <button id="btnNewCurve" type="button"   >
+                                        New Curve
+                                </button>
 
                                 <h3>Edit Params:</h3>
-                                <label>Color</label><input id="colorPicker" type = "color"/><br/>
-                                <label>Line Width</label><input id="lineWidth" type="number"/><br/>
-                                <div id="radiusDiv"><label>Radius</label><input id="radius" type="number" /></div>
+                                <label>Color: </label><input id="colorPicker" type = "color"/><br/>
+                                <label>Line Width: </label><input id="lineWidth" type="number"/><br/>
+                                <div id="radiusDiv"><label>Radius: </label><input id="radius" type="number" /></div>
+                                <hr />
+                                <label>x(t): </label><input id="xt" type="text" value="350+100*Math.cos(t)"/><br/>
+                                <label>y(t): </label><input id="yt" type="text" value="200+100*Math.sin(t)"/><br/>
+                                <label>t min: </label><input id="tmin" type="number" value="0" /><br/>
+                                <label>t max: </label><input id="tmax" type="number" value="5" /><br/>
+                                <label># segments: </label><input id="segments" type="number" value="20" /><br />
+                                <label>tick marks: </label><input id="tickmarks" type="checkbox" />
 
                         </div>
 
