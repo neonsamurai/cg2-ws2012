@@ -68,7 +68,7 @@ define(["util", "vec2", "scene", "point_dragger"],
         var t = vec2.projectPointOnLine(pos, this.p0, this.p1);
                 
         // outside the line segment?
-        if(t<0.0 || t>vec2.length(vec2.sub(this.p0,this.p1))) {
+        if(t<0.0 || t>1) {
             return false; 
         }
         
