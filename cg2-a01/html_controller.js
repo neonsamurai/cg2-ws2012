@@ -10,7 +10,10 @@
  */
 
 /* requireJS module definition */
-define(["jquery", "straight_line", "circle", "param_curve"], (function($, StraightLine, Circle, ParametricCurve) {"use strict";
+define(
+    ["jquery", "straight_line", "circle", "param_curve", "bezier_curve"], 
+    (function($, StraightLine, Circle, ParametricCurve, BezierCurve) 
+        {"use strict";
 
         /*
          * define callback functions to react to changes in the HTML page
@@ -88,12 +91,54 @@ define(["jquery", "straight_line", "circle", "param_curve"], (function($, Straig
                                 color : randomColor()
                         };
 
-                        var curve = new ParametricCurve(parseInt($("#tmin").val()), parseInt($("#tmax").val()), $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
+                        var curve = new ParametricCurve(
+                            parseInt($("#tmin").val()), parseInt($("#tmax").val()), 
+                            $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
                         
                         scene.addObjects([curve]);
 
                         sceneController.deselect();
                         sceneController.select(curve);
+                }));
+                $("#btnNewBezierCurve").click((function(){
+                        var style = {
+                            width : Math.floor(Math.random() * 3) + 1,
+                            color: randomColor()
+                        };
+
+                        var bezCurve = new BezierCurve(
+                            [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], 
+                            parseInt($("#tmin").val()), parseInt($("#tmax").val()), parseInt($("#segments").val()));
+
+                        scene.addObjects([bezCurve]);
+
+                        sceneController.deselect();
+                        sceneController.select(bezCurve);
+                }));
+                $("#xt").change((function(){
+                        var obj = sceneController.getSelectedObject();
+                        obj.xt = $("#xt").val();
+                        scene.draw(context);
+                }));
+                $("#yt").change((function(){
+                        var obj = sceneController.getSelectedObject();
+                        obj.yt = $("#yt").val();
+                        scene.draw(context);
+                }));
+                $("#tmin").change((function(){
+                        var obj = sceneController.getSelectedObject();
+                        obj.tmin = parseInt($("#tmin").val());
+                        scene.draw(context);
+                }));
+                $("#tmax").change((function(){
+                        var obj = sceneController.getSelectedObject();
+                        obj.tmax = parseInt($("#tmax").val());
+                        scene.draw(context);
+                }));
+                $("#segments").change((function(){
+                        var obj = sceneController.getSelectedObject();
+                        obj.segments = parseInt($("#segments").val());
+                        scene.draw(context);
                 }));
                 $("#colorPicker").change((function() {
                         console.log($("#colorPicker").val());
