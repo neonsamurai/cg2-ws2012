@@ -34,15 +34,42 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 context.moveTo(this.p2[0],this.p2[1]);
                 context.lineTo(this.p3[0],this.p3[1]);
                 context.moveTo(this.p3[0],this.p3[1]);
+                
+
+                // draw curve then with Casteljau
+                var increment = (this.tmax - this.tmin) / this.segments;
+                var t = this.tmin;
+
+                var a0, a1, a2, b0, b1, c = [0,0];
+
+                context.moveTo(this.p0[0], this.p0[1]);
+                for (var i = 0; i < this.segments; i++) {
+                        // step 1
+                        a0 = vec2.add(vec2.mult(this.p0, 1-t),vec2.mult(this.p1, t));
+                        a1 = vec2.add(vec2.mult(this.p1, 1-t),vec2.mult(this.p2, t));
+                        a2 = vec2.add(vec2.mult(this.p2, 1-t),vec2.mult(this.p3, t));
+
+                        // step 2
+                        b0 = vec2.add(vec2.mult(a0, 1-t),vec2.mult(a1, t));
+                        b1 = vec2.add(vec2.mult(a1, 1-t),vec2.mult(a2, t));
+
+                        // step 3
+                        c = vec2.add(vec2.mult(b0, 1-t),vec2.mult(b1, t));
+                        console.log(i);
+                        // draw line segment
+                        context.lineTo(c[0],c[1]);
+                        
+                        context.moveTo(c[0],c[1]);
+                        t += increment;
+
+                };
                 context.stroke();
 
-                // draw curves then
-                
 
         }
 
         BezierCurve.prototype.isHit = function(context, p) {
-                pass;
+                return;
         }
 
         BezierCurve.prototype.createDraggers = function() {

@@ -31,7 +31,7 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 var increment = (this.tmax - this.tmin) / this.segments;
                 var t = this.tmin;
                 this.pointList = [];
-                for (var i = 0; i < this.segments; i = i + 1) {
+                for (var i = 0; i < this.segments; i++) {
                         this.x1 = parseInt(eval(this.xt));
                         this.y1 = parseInt(eval(this.yt));
                         this.pointList.push([this.x1, this.y1]);
