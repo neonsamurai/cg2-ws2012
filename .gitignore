@@ -2,7 +2,7 @@
 *.project
 *.pydevproject
 .settings
-.sublime-*
+*.sublime-*
 
 # Mongoose webserver
 mongoose-3.3.exe
