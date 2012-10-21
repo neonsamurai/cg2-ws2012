@@ -1,7 +1,8 @@
-# Aptana files
+# IDE files
 *.project
 *.pydevproject
 .settings
+.sublime-*
 
 # Mongoose webserver
 mongoose-3.3.exe
