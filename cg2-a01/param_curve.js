@@ -1,5 +1,5 @@
 /* requireJS module definition */
-define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, PointDragger) {"use strict";
+define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util, vec2, Scene, PointDragger, TickMarks) {"use strict";
 
         var ParametricCurve = function(tmin, tmax, xt, yt, segments, lineStyle) {
                 this.lineStyle = lineStyle || {
@@ -31,6 +31,7 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 var increment = (this.tmax - this.tmin) / this.segments;
                 var t = this.tmin;
                 this.pointList = [];
+                
                 for (var i = 0; i < this.segments; i++) {
                         this.x1 = parseInt(eval(this.xt));
                         this.y1 = parseInt(eval(this.yt));
@@ -43,6 +44,10 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                         context.stroke();
                 };
                 this.pointList.push([this.x2, this.y2]);
+
+                var tm = new TickMarks(this);
+                tm.draw(context);
+                
         }
 
         ParametricCurve.prototype.isHit = function(context, p) {

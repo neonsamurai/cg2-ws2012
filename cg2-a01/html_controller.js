@@ -108,7 +108,7 @@ define(
 
                         var bezCurve = new BezierCurve(
                             [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], 
-                            parseInt($("#tmin").val()), parseInt($("#tmax").val()), parseInt($("#segments").val()));
+                            parseInt($("#segments").val()));
 
                         scene.addObjects([bezCurve]);
 
@@ -140,6 +140,10 @@ define(
                         obj.segments = parseInt($("#segments").val());
                         scene.draw(context);
                 }));
+                var updateSegmentsInput = function() {
+                    var obj = sceneController.getSelectedObject();
+                    $("#segments").val(obj.segments);
+                }
                 $("#colorPicker").change((function() {
                         console.log($("#colorPicker").val());
 
@@ -180,10 +184,12 @@ define(
                         }
                         scene.draw(context);
                 }
+                
                 var updateInputFields = function() {
                         updateColorpicker();
                         updateLineWidthInput();
                         updateRadiusInput();
+                        updateSegmentsInput();
                 }
 
                 sceneController.onSelection(updateInputFields);

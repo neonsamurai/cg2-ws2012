@@ -1,7 +1,7 @@
 /* requireJS module definition */
-define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, PointDragger) {"use strict";
+define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util, vec2, Scene, PointDragger, TickMarks) {"use strict";
 
-        var BezierCurve = function(p0, p1 ,p2 ,p3 ,tmin,tmax, segments, lineStyle) {
+        var BezierCurve = function(p0, p1 ,p2 ,p3, segments, lineStyle) {
                 this.lineStyle = lineStyle || {
                         width : "2",
                         color : "#0000FF"
@@ -13,10 +13,12 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 this.p3 = p3;
 
                 this.t = tmin;
-                this.tmin = tmin;
-                this.tmax = tmax;
+                this.tmin = 0;
+                this.tmax = 1;
                 
                 this.segments = segments;
+
+                this.pointList = [];
                 
                 console.log("creating bezier curve with p0 = " + this.p0 + ", p1 = " + this.p1 + ", p2 = " + this.p2 + ", p3 = " + this.p3 + ", t/min = " + this.tmin + ", t/max = " + this.tmax + ", segments = " + this.segments); };
 
@@ -35,6 +37,7 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 context.lineTo(this.p3[0],this.p3[1]);
                 context.moveTo(this.p3[0],this.p3[1]);
                 
+                
 
                 // draw curve then with Casteljau
                 var increment = (this.tmax - this.tmin) / this.segments;
@@ -43,6 +46,15 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
                 var a0, a1, a2, b0, b1, c = [0,0];
 
                 context.moveTo(this.p0[0], this.p0[1]);
+                this.pointList = [];
+                
+                this.pointList.push([this.p0[0],this.p0[1]]);
+                this.pointList.push([this.p1[0],this.p1[1]]);
+                this.pointList.push([this.p2[0],this.p2[1]]);
+                this.pointList.push([this.p3[0],this.p3[1]]);
+                this.pointList.push([this.p0[0],this.p0[1]]);
+
+                // try adaptive subdivision using: http://www.antigrain.com/research/adaptive_bezier/index.html
                 for (var i = 0; i < this.segments; i++) {
                         // step 1
                         a0 = vec2.add(vec2.mult(this.p0, 1-t),vec2.mult(this.p1, t));
@@ -55,21 +67,49 @@ define(["util", "vec2", "scene", "point_dragger"], (function(Util, vec2, Scene, 
 
                         // step 3
                         c = vec2.add(vec2.mult(b0, 1-t),vec2.mult(b1, t));
-                        console.log(i);
+                        
                         // draw line segment
                         context.lineTo(c[0],c[1]);
-                        
                         context.moveTo(c[0],c[1]);
+                        this.pointList.push([c[0],c[1]]);
                         t += increment;
 
                 };
+                context.lineTo(this.p3[0],this.p3[1]);
+                this.pointList.push([this.p3[0],this.p3[1]]);
                 context.stroke();
+                
 
-
+                var tm = new TickMarks(this);
+                tm.draw(context);
+                
         }
 
         BezierCurve.prototype.isHit = function(context, p) {
-                return;
+                var t = 0;
+                for (var i = 0; i < this.pointList.length - 1; i++) {
+                        t = vec2.projectPointOnLine(p, this.pointList[i], this.pointList[i + 1])
+                        console.log(p);
+                        console.log(this.pointList[i]);
+                        console.log(this.pointList[i + 1]);
+                        console.log(t);
+                        if (t >= 0 && t <= 1) {
+                                // coordinates of the projected point
+                                var pos = vec2.add(this.pointList[i], vec2.mult(vec2.sub(this.pointList[i + 1], this.pointList[i]), t));
+
+                                // distance of the point from the line
+                                var d = vec2.length(vec2.sub(pos, p));
+
+                                // allow 2 pixels extra "sensitivity"
+                                if (d <= (this.lineStyle.width / 2) + 2){
+                                        console.log("Bezier Curve: Hit");
+                                        return true;
+                                }
+                                
+                        }
+                }
+                console.log("Bezier Curve: Missed");
+                return false;
         }
 
         BezierCurve.prototype.createDraggers = function() {
