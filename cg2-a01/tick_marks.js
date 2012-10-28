@@ -1,6 +1,5 @@
 define(["util", "vec2", "scene"], (function(Util, vec2, Scene) {"use strict";
 
-        //TODO: hook up event listener for checkbox!
         var TickMarks = function(obj) {
                 this.pointList = obj.pointList;
                 this.obj = obj;

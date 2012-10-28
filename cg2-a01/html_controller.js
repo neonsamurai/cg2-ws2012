@@ -90,22 +90,41 @@ define(
                                 width : Math.floor(Math.random() * 3) + 1,
                                 color : randomColor()
                         };
-
-                        var curve = new ParametricCurve(
-                            parseInt($("#tmin").val()), parseInt($("#tmax").val()), 
-                            $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
                         
-                        scene.addObjects([curve]);
+                		try {
+                        	var t = 1;                			
+                			var errorString = "The given x(t) is not a correct function.";
+                			parseInt(eval($("#xt").val()));
+                			errorString = "The given y(t) is not a correct function.";
+                			parseInt(eval($("#yt").val()));                			
+                		} catch(err) {
+                    		alert(errorString);
+                			return;
+                		}
+                		
+						var curve =	 new ParametricCurve(
+                        parseInt($("#tmin").val()), parseInt($("#tmax").val()), 
+                        $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
+                        
+	                    scene.addObjects([curve]);
 
-                        sceneController.deselect();
-                        sceneController.select(curve);
+    	                sceneController.deselect();
+        	            sceneController.select(curve);
+
+	
                 }));
+                var updateFunctionsInput = function() {
+                        var obj = sceneController.getSelectedObject();
+                        if (obj.xt) {
+                            $("#xt").val(obj.xt);
+                            $("#yt").val(obj.yt);
+                        }
+                }
                 $("#btnNewBezierCurve").click((function(){
                         var style = {
                             width : Math.floor(Math.random() * 3) + 1,
                             color: randomColor()
                         };
-
                         var bezCurve = new BezierCurve(
                             [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], 
                             parseInt($("#segments").val()));
@@ -135,6 +154,13 @@ define(
                         obj.tmax = parseInt($("#tmax").val());
                         scene.draw(context);
                 }));
+                var updateTMinMaxInput = function() {
+                    var obj = sceneController.getSelectedObject(); 
+                    if (obj.tmin) {
+                    	$("#tmin").val(obj.tmin);
+                    	$("#tmax").val(obj.tmax);
+                    }
+                }
                 $("#segments").change((function(){
                         var obj = sceneController.getSelectedObject();
                         obj.segments = parseInt($("#segments").val());
@@ -172,6 +198,15 @@ define(
                         obj.r = parseInt($("#radius").val());
                         scene.draw(context);
                 }));
+                $("#tickmarks").change((function() {
+                        var obj = sceneController.getSelectedObject();
+                        obj.tickmarks = !obj.tickmarks;
+						scene.draw(context);
+                }));
+                var updateTickMarksInput = function () {
+                	var obj = sceneController.getSelectedObject();
+                	$("#tickmarks").attr('checked',obj.tickmarks);        	
+                }
                 var updateRadiusInput = function() {
                         var obj = sceneController.getSelectedObject();
 
@@ -190,6 +225,9 @@ define(
                         updateLineWidthInput();
                         updateRadiusInput();
                         updateSegmentsInput();
+                        updateTickMarksInput();
+                        updateFunctionsInput();
+                        updateTMinMaxInput();
                 }
 
                 sceneController.onSelection(updateInputFields);

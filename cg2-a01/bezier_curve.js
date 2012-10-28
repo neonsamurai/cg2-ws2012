@@ -19,6 +19,7 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                 this.segments = segments;
 
                 this.pointList = [];
+                this.tickmarks = false;
                 
                 console.log("creating bezier curve with p0 = " + this.p0 + ", p1 = " + this.p1 + ", p2 = " + this.p2 + ", p3 = " + this.p3 + ", t/min = " + this.tmin + ", t/max = " + this.tmax + ", segments = " + this.segments); };
 
@@ -79,9 +80,10 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                 this.pointList.push([this.p3[0],this.p3[1]]);
                 context.stroke();
                 
-
-                var tm = new TickMarks(this);
-                tm.draw(context);
+				if (this.tickmarks) {
+					var tm = new TickMarks(this);
+                	tm.draw(context);
+				}
                 
         }
 
