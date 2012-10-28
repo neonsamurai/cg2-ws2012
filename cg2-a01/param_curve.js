@@ -6,6 +6,8 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                         width : "2",
                         color : "#0000FF"
                 };
+                
+
 
                 this.x1 = 0;
                 this.y1 = 0;
@@ -16,13 +18,26 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                 this.tmax = tmax;
                 this.xt = xt;
                 this.yt = yt;
+
                 this.segments = segments;
                 this.pointList = [];
+                this.tickmarks = false;
 
                 console.log("creating curve with x(t) = " + this.xt + ", y(t) = " + this.yt + ", t/min = " + this.tmin + ", t/max = " + this.tmax + ", segments = " + this.segments);
         };
 
         ParametricCurve.prototype.draw = function(context) {
+                
+                try {
+                	var errorString = "The given x(t) is not a correct function.";
+                	parseInt(eval(this.xt));
+                	errorString = "The given y(t) is not a correct function."
+                	parseInt(eval(this.yt));
+                } catch(err) {
+                    alert(errorString);
+                	return;
+                }
+                
                 context.beginPath();
 
                 context.lineWidth = this.lineStyle.width;
@@ -30,24 +45,27 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
 
                 var increment = (this.tmax - this.tmin) / this.segments;
                 var t = this.tmin;
-                this.pointList = [];
-                
-                for (var i = 0; i < this.segments; i++) {
-                        this.x1 = parseInt(eval(this.xt));
-                        this.y1 = parseInt(eval(this.yt));
-                        this.pointList.push([this.x1, this.y1]);
-                        t = t + increment;
-                        this.x2 = parseInt(eval(this.xt));
-                        this.y2 = parseInt(eval(this.yt));
-                        context.moveTo(this.x1, this.y1);
-                        context.lineTo(this.x2, this.y2);
-                        context.stroke();
+                this.pointList = [];		
+                				
+	
+				for (var i = 0; i < this.segments; i++) {
+    	            this.x1 = parseInt(eval(this.xt));
+                    this.y1 = parseInt(eval(this.yt));
+                    this.pointList.push([this.x1, this.y1]);
+                    t = t + increment;
+                    this.x2 = parseInt(eval(this.xt));
+                    this.y2 = parseInt(eval(this.yt));
+                    context.moveTo(this.x1, this.y1);
+                    context.lineTo(this.x2, this.y2);
+                    context.stroke();
                 };
                 this.pointList.push([this.x2, this.y2]);
-
-                var tm = new TickMarks(this);
-                tm.draw(context);
-                
+				
+				if (this.tickmarks) {
+					var tm = new TickMarks(this);
+                	tm.draw(context);	
+				}
+				
         }
 
         ParametricCurve.prototype.isHit = function(context, p) {
