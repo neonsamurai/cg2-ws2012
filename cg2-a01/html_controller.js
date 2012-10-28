@@ -90,22 +90,34 @@ define(
                                 width : Math.floor(Math.random() * 3) + 1,
                                 color : randomColor()
                         };
-
-                        var curve = new ParametricCurve(
-                            parseInt($("#tmin").val()), parseInt($("#tmax").val()), 
-                            $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
                         
-                        scene.addObjects([curve]);
+                		try {
+                        	var t = 1;                			
+                			var errorString = "The given x(t) is not a correct function.";
+                			parseInt(eval($("#xt").val()));
+                			errorString = "The given y(t) is not a correct function.";
+                			parseInt(eval($("#yt").val()));                			
+                		} catch(err) {
+                    		alert(errorString);
+                			return;
+                		}
+                		
+						var curve =	 new ParametricCurve(
+                        parseInt($("#tmin").val()), parseInt($("#tmax").val()), 
+                        $("#xt").val(), $("#yt").val(), parseInt($("#segments").val()));
+                        
+	                    scene.addObjects([curve]);
 
-                        sceneController.deselect();
-                        sceneController.select(curve);
+    	                sceneController.deselect();
+        	            sceneController.select(curve);
+
+	
                 }));
                 $("#btnNewBezierCurve").click((function(){
                         var style = {
                             width : Math.floor(Math.random() * 3) + 1,
                             color: randomColor()
                         };
-
                         var bezCurve = new BezierCurve(
                             [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], [randomX(), randomY()], 
                             parseInt($("#segments").val()));
