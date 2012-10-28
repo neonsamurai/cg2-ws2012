@@ -113,6 +113,13 @@ define(
 
 	
                 }));
+                var updateFunctionsInput = function() {
+                        var obj = sceneController.getSelectedObject();
+                        if (obj.xt) {
+                            $("#xt").val(obj.xt);
+                            $("#yt").val(obj.yt);
+                        }
+                }
                 $("#btnNewBezierCurve").click((function(){
                         var style = {
                             width : Math.floor(Math.random() * 3) + 1,
@@ -147,6 +154,13 @@ define(
                         obj.tmax = parseInt($("#tmax").val());
                         scene.draw(context);
                 }));
+                var updateTMinMaxInput = function() {
+                    var obj = sceneController.getSelectedObject(); 
+                    if (obj.tmin) {
+                    	$("#tmin").val(obj.tmin);
+                    	$("#tmax").val(obj.tmax);
+                    }
+                }
                 $("#segments").change((function(){
                         var obj = sceneController.getSelectedObject();
                         obj.segments = parseInt($("#segments").val());
@@ -191,8 +205,7 @@ define(
                 }));
                 var updateTickMarksInput = function () {
                 	var obj = sceneController.getSelectedObject();
-                	$("#tickmarks").attr('checked',obj.tickmarks);
-                	
+                	$("#tickmarks").attr('checked',obj.tickmarks);        	
                 }
                 var updateRadiusInput = function() {
                         var obj = sceneController.getSelectedObject();
@@ -213,6 +226,8 @@ define(
                         updateRadiusInput();
                         updateSegmentsInput();
                         updateTickMarksInput();
+                        updateFunctionsInput();
+                        updateTMinMaxInput();
                 }
 
                 sceneController.onSelection(updateInputFields);
