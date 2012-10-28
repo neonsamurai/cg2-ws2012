@@ -18,6 +18,7 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                 this.yt = yt;
                 this.segments = segments;
                 this.pointList = [];
+                this.tickmarks = false;
 
                 console.log("creating curve with x(t) = " + this.xt + ", y(t) = " + this.yt + ", t/min = " + this.tmin + ", t/max = " + this.tmax + ", segments = " + this.segments);
         };
@@ -44,10 +45,11 @@ define(["util", "vec2", "scene", "point_dragger", "tick_marks"], (function(Util,
                         context.stroke();
                 };
                 this.pointList.push([this.x2, this.y2]);
-
-                var tm = new TickMarks(this);
-                tm.draw(context);
-                
+				
+				if (this.tickmarks) {
+					var tm = new TickMarks(this);
+                	tm.draw(context);	
+				}
         }
 
         ParametricCurve.prototype.isHit = function(context, p) {

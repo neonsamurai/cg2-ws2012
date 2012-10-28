@@ -172,6 +172,16 @@ define(
                         obj.r = parseInt($("#radius").val());
                         scene.draw(context);
                 }));
+                $("#tickmarks").change((function() {
+                        var obj = sceneController.getSelectedObject();
+                        obj.tickmarks = !obj.tickmarks;
+						scene.draw(context);
+                }));
+                var updateTickMarksInput = function () {
+                	var obj = sceneController.getSelectedObject();
+                	$("#tickmarks").attr('checked',obj.tickmarks);
+                	
+                }
                 var updateRadiusInput = function() {
                         var obj = sceneController.getSelectedObject();
 
@@ -190,6 +200,7 @@ define(
                         updateLineWidthInput();
                         updateRadiusInput();
                         updateSegmentsInput();
+                        updateTickMarksInput();
                 }
 
                 sceneController.onSelection(updateInputFields);
