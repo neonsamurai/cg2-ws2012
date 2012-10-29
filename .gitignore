@@ -6,3 +6,6 @@
 
 # Mongoose webserver
 mongoose-3.3.exe
+
+# Exercise packages
+*.zip
