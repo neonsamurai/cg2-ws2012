@@ -159,8 +159,8 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 this.band     = new Band(gl, { radius: 0.4, height: 0.2, segments: 50 } );
                 
                 // for the UI - this will be accessed directly by HtmlController
-                this.drawOptions = { "Triangle": true, 
-                                     "Cube": false, 
+                this.drawOptions = { "Triangle": false, 
+                                     "Cube": true, 
                                      "Band": false,
                                    };
                 
@@ -190,14 +190,15 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
 
                 // clear color and depth buffers
                 gl.clearColor(0.7, 0.7, 0.7, 1.0); 
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                gl.enable(gl.DEPTH_TEST);
                 
                 // draw the objects
                 if(this.drawOptions["Triangle"]) {
-                    this.triangle.draw(gl, this.prog_red);
+                    this.triangle.draw(gl, this.prog_vertexColor);
                 };
                 if(this.drawOptions["Cube"]) {
-                    this.cube.draw(gl, this.prog_red);
+                    this.cube.draw(gl, this.prog_vertexColor);
                 };
                 if(this.drawOptions["Band"]) {
                     this.band.draw(gl, this.prog_red);

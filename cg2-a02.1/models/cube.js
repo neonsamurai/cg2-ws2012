@@ -87,6 +87,18 @@ define(["util", "vbo"],
                         0.5, -0.5, -0.5,  // F'': index 22
                         0.5, -0.5,  0.5   // B'': index 23
                      ];
+        this.triangles = [ 0, 1, 2,
+                          0, 2, 3,
+                          4, 5, 6,
+                          4, 6, 7,
+                          8, 9, 10,
+                          8, 10, 11,
+                          12, 13, 14,
+                          12, 14, 15,
+                          16, 17, 18,
+                          16, 18, 19,
+                          20, 21, 22,
+                          20, 22, 23];
                                           
         // therer are 3 floats per vertex, so...
         this.numVertices = coords.length / 3;
@@ -96,18 +108,63 @@ define(["util", "vbo"],
                                                     "dataType": gl.FLOAT,
                                                     "data": coords 
                                                   } );
+        var colors = 
+          [  
+            1.0, 0.0, 0.0, 1.0,
+            1.0, 0.0, 0.0, 1.0,
+            1.0, 0.0, 0.0, 1.0,
+            1.0, 0.0, 0.0, 1.0,
 
+            0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0,
+
+            0.0, 0.0, 1.0, 1.0,
+            0.0, 0.0, 1.0, 1.0,
+            0.0, 0.0, 1.0, 1.0,
+            0.0, 0.0, 1.0, 1.0,
+
+            1.0, 0.5, 0.0, 1.0,
+            1.0, 0.5, 0.0, 1.0,
+            1.0, 0.5, 0.0, 1.0,
+            1.0, 0.5, 0.0, 1.0,
+
+            1.0, 1.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 1.0,
+
+            0.0, 1.0, 1.0, 1.0,
+            0.0, 1.0, 1.0, 1.0,
+            0.0, 1.0, 1.0, 1.0,
+            0.0, 1.0, 1.0, 1.0
+          ];
         
+        
+        this.colorBuffer = new vbo.Attribute(gl, {  "numComponents": 4,
+                                                    "dataType": gl.FLOAT,
+                                                    "data": colors
+                                                  })
     };
 
-    // draw method clears color buffer and optionall depth buffer
+    // draw method clears color buffer and optional depth buffer
     Cube.prototype.draw = function(gl,program) {
+
+
+
+        this.triangleBuffer = new vbo.Indices(gl, {"indices":this.triangles});
     
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
+        this.triangleBuffer.bind(gl);
+        this.colorBuffer.bind(gl, program, "vertexColor");
                 
-        // draw the vertices as points
-        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices()); 
+        // draw the vertices as triangles per side
+        gl.drawElements(gl.TRIANGLES,36, gl.UNSIGNED_SHORT, 0);
+        /*for (var i = 0; i < this.coordsBuffer.numVertices()-4; i+=4) {
+          gl.drawArrays(gl.TRIANGLE_STRIP, i, i+3);
+        };*/
          
     };
         
