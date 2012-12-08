@@ -157,11 +157,16 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 this.triangle = new Triangle(gl);
                 this.cube     = new Cube(gl);
                 this.band     = new Band(gl, { radius: 0.4, height: 0.2, segments: 50 } );
+				this.wireframeBand = new Band(gl, { radius: 0.4, height: 0.2, segments: 50, asWireframe: true } );
                 
                 // for the UI - this will be accessed directly by HtmlController
                 this.drawOptions = { "Triangle": false, 
                                      "Cube": true, 
                                      "Band": false,
+									 "Wireframe Band":false,
+									 "Depth Test": true,
+									 "Frontface Culling": false,
+									 "Backface Culling": false									 
                                    };
                 
             };
@@ -191,8 +196,7 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 // clear color and depth buffers
                 gl.clearColor(0.7, 0.7, 0.7, 1.0); 
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                gl.enable(gl.DEPTH_TEST);
-                
+               
                 // draw the objects
                 if(this.drawOptions["Triangle"]) {
                     this.triangle.draw(gl, this.prog_vertexColor);
@@ -203,6 +207,31 @@ define(["jquery", "gl-matrix", "util", "webgl-debug",
                 if(this.drawOptions["Band"]) {
                     this.band.draw(gl, this.prog_red);
                 };
+				if(this.drawOptions["Wireframe Band"]) {
+					this.wireframeBand.draw(gl, this.prog_black);
+				};
+				if(this.drawOptions["Depth Test"]) {
+					gl.enable(gl.DEPTH_TEST);					
+				} else {
+					gl.disable(gl.DEPTH_TEST);
+				};
+				if(this.drawOptions["Frontface Culling"]) {
+					gl.enable(gl.CULL_FACE);
+					gl.frontFace(gl.CW);
+					gl.cullFace(gl.FRONT);
+				};
+				if(this.drawOptions["Backface Culling"]) {
+					gl.enable(gl.CULL_FACE);
+					gl.frontFace(gl.CW);
+					gl.cullFace(gl.BACK);
+				};
+				if (!this.drawOptions["Frontface Culling"] && !this.drawOptions["Backface Culling"]) {
+					gl.disable(gl.CULL_FACE);
+				}
+				if (this.drawOptions["Frontface Culling"] && this.drawOptions["Backface Culling"]) {
+					gl.cullFace(gl.FRONT_AND_BACK);
+				}				
+				
             };
             
             // initial transformation - tilt view by 25° from above

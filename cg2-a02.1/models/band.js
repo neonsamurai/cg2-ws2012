@@ -48,7 +48,24 @@ define(["util", "vbo"],
             coords.push(x,y1,z);
             
         };  
-        
+
+		this.numVertices = coords.length / 3;
+		
+		this.shapes = [];		
+		
+		if (this.asWireframe) {
+			for (var i = 0; i < this.numVertices - 2; i+=2) {
+				this.shapes.push(i,i+2); //horizontal top
+				this.shapes.push(i,i+1); //vertical
+				this.shapes.push(i+1,i+3); //horizontal bottom
+			};
+		} else {	
+			for (var i = 1; i < this.numVertices - 1; i+=2) {
+				this.shapes.push(i,i-1,i+1);
+				this.shapes.push(i+1,i+2,i);
+			};
+		}	
+						  
         // create vertex buffer object (VBO) for the coordinates
         this.coordsBuffer = new vbo.Attribute(gl, { "numComponents": 3,
                                                     "dataType": gl.FLOAT,
@@ -60,13 +77,20 @@ define(["util", "vbo"],
     // draw method clears color buffer and optionall depth buffer
     Band.prototype.draw = function(gl,program) {
     
+		this.shapeBuffer = new vbo.Indices(gl, {"indices":this.shapes});
+		
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
- 
-        // draw the vertices as points
-        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices()); 
-         
-
+		this.shapeBuffer.bind(gl);
+		gl.enable(gl.POLYGON_OFFSET_FILL);
+		gl.polygonOffset(1.0,1.0);	
+		//draw
+		if (this.asWireframe) {
+			gl.drawElements(gl.LINES,this.shapes.length,gl.UNSIGNED_SHORT, 0);
+		} else {
+			gl.drawElements(gl.TRIANGLES,this.shapes.length,gl.UNSIGNED_SHORT, 0);
+		};
+		gl.disable(gl.POLYGON_OFFSET_FILL);
     };
         
     // this module only returns the Band constructor function    
