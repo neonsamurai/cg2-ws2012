@@ -60,7 +60,7 @@ define(["jquery"],
         
         // set initial values for the input elements
         $("#anim_Toggle").attr("checked", undefined);
-        $("#anim_Speed").attr("value", 20);
+        $("#anim_Speed").attr("value", 10);
         
         // create one input element for each object in "objects"
         for(var o in scene.drawOptions) {
@@ -82,6 +82,28 @@ define(["jquery"],
         // set up event handler and execute it once so everything is set consistently
         $(".inputParam").change( updateParams ); 
         updateParams();
+		
+		// change robot's rotation angles on key press
+        $(document).keypress((function(event) {
+            window.console.log("key " + event.which + " pressed");
+            // which key corresponds to which joint
+            // there are two keys for each joint: with Shift and without Shift pressed
+            var keyJointMap = {
+                88: "worldX", 120: "worldX", 
+                89: "worldY", 121: "worldY", 
+				99: "grip", 67: "grip",
+				118: "middleArmMove", 86: "middleArmMove",
+				97: "middleArmStretch", 65: "middleArmStretch",
+				115: "upperArmStretch", 83: "upperArmStretch",
+				98: "upperArmMove", 66: "upperArmMove",
+				100: "lowerArmMove", 68: "lowerArmMove",
+				102: "clawMove", 70: "clawMove"
+				
+            };
+            // Move by +5 deg or -5 deg depending on Shift key
+            // Assumption: keycodes below 97 are with Shift. 
+            scene.rotateJoint(keyJointMap[event.which], event.which<97? -5 : 5);
+        }));
         
     }; // end of HtmlController constructor function
         
